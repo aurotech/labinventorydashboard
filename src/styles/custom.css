@@ -18,12 +18,19 @@ body {
   font-weight: 700;
 }
 
+.border-gray-right {
+  border-right: 1px solid lightgray;
+}
+
 .p-0 {
   padding: 0;
 }
 
 .m-10 {
   margin: 10px;
+}
+.mt-25 {
+  margin-top: 25px;
 }
 
 .box-shadow {

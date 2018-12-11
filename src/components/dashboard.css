@@ -1,0 +1,13 @@
+.row-itmes-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-transactions {
+  height: 72%;
+  overflow-y: scroll;
+}
+
+.pos-fixed {
+  position: fixed;
+}

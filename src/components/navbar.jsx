@@ -14,7 +14,8 @@ class Navbar extends Component {
           height="90"
         />
         <div className="container p-0">
-          {path === "/" && <h3 className="page-title">DASHBOARD+++</h3>}
+          {path === "/" && <h3 className="page-title">DASHBOARD</h3>}
+          {path === "/asset/:id" && <h3 className="page-title">ASSET</h3>}
           {path === "/assets" && <h3 className="page-title">ASSETS</h3>}
         </div>
       </div>
