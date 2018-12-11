@@ -76,7 +76,11 @@ class App extends Component {
               </Link>
             </div>
             <h3>{this.state.assets.length}</h3>
-            <Assets tableClasses="table-scroll" onMouse={this.onMouseEvent} />
+            <Assets
+              tableClasses="table-scroll"
+              onMouse={this.onMouseEvent}
+              assets={this.state.assets}
+            />
           </div>
           <div className="col-3 border-gray">
             <div className="row">

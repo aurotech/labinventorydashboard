@@ -1,24 +1,14 @@
 import React, { Component } from "react";
-import { getAssets, getAssetHistory } from "../services/data";
+import { getAssetHistory } from "../services/data";
 import { OverlayPanel } from "primereact/overlaypanel";
 
 class Assets extends Component {
   state = {
-    assets: [],
     assetHistory: []
   };
 
   trigger = { display: "none" };
   // op = React.createRef();
-
-  async componentWillMount() {
-    try {
-      const assets = await getAssets();
-      this.setState({ assets });
-    } catch (ex) {
-      console.log(ex);
-    }
-  }
 
   getHistory = async (e, asset, assetId) => {
     e.persist();
@@ -56,7 +46,7 @@ class Assets extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.assets.map((a, i) => (
+            {this.props.assets.map((a, i) => (
               <tr key={a.assetId}>
                 <td>{a.assetId}</td>
                 <td>{a.assetType}</td>

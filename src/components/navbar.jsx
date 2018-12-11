@@ -3,7 +3,6 @@ import React, { Component } from "react";
 class Navbar extends Component {
   state = {};
 
-  
   render() {
     const path = window.location.pathname;
     return (
@@ -15,7 +14,7 @@ class Navbar extends Component {
           height="90"
         />
         <div className="container p-0">
-          {path === "/" && <h3 className="page-title">DASHBOARD</h3>}
+          {path === "/" && <h3 className="page-title">DASHBOARD+++</h3>}
           {path === "/assets" && <h3 className="page-title">ASSETS</h3>}
         </div>
       </div>
