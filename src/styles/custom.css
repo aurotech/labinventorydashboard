@@ -35,6 +35,10 @@ body {
   margin: 15px auto;
 }
 
+.field-type {
+  font-weight: bold;
+}
+
 .table-scroll {
   max-height: 300px;
   overflow-y: scroll;

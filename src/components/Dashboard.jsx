@@ -36,7 +36,7 @@ class App extends Component {
         <div className="row box-shadow top-block-raised">
           <div className="col-9 border-gray p-left-30">
             <p className="box-heading">Total Items</p>
-            <h3>34</h3>
+            <h3>{this.state.assets.length}</h3>
             <hr />
 
             <BarChart />
@@ -45,19 +45,19 @@ class App extends Component {
             <div className="row">
               <div className="col data-block border-bottom">
                 <p>Total Assets</p>
-                <h3>34</h3>
+                <h3>{this.state.assets.length}</h3>
               </div>
             </div>
             <div className="row">
               <div className="col data-block border-bottom">
                 <p>Total Batches</p>
-                <h3>34</h3>
+                <h3>{this.state.assets.length}</h3>
               </div>
             </div>
             <div className="row">
               <div className="col data-block">
                 <p>Total Items</p>
-                <h3>34</h3>
+                <h3>{this.state.assets.length}</h3>
               </div>
             </div>
           </div>

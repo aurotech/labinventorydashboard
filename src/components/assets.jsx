@@ -73,7 +73,11 @@ class Assets extends Component {
                       ref={el => (this[`asset${i}`] = el)}
                     >
                       {this.state.assetHistory.map((h, i) => (
-                        <p key={i}>{h.description}</p>
+                        <p key={i}>
+                          Status:<span className="field-type">{h.status}</span>{" "}
+                          | Last Update:
+                          <span className="field-type">{h.timestamp}</span>
+                        </p>
                       ))}
                     </OverlayPanel>
                   </div>
