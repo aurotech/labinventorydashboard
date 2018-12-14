@@ -22,6 +22,10 @@ body {
   border-right: 1px solid lightgray;
 }
 
+.d-block {
+  display: block;
+}
+
 .p-0 {
   padding: 0;
 }

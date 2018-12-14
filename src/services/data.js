@@ -18,5 +18,6 @@ export async function getAssets() {
 }
 export async function getAssetHistory(id) {
   const { data } = await http.get(apiEndPoint + "/assetHistory/" + id);
-  return data.history;
+  if (data && data.history) return data.history;
+  return [];
 }

@@ -10,15 +10,12 @@ class Assets extends Component {
   };
 
   trigger = { display: "none" };
-  // op = React.createRef();
-
   async componentWillMount() {
     if (!this.props.assets) {
       const assets = await getAssets();
       this.setState({ assets });
     }
   }
-
   getHistory = async (e, asset, assetId) => {
     e.persist();
 
