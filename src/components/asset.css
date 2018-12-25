@@ -6,3 +6,9 @@
 .b-raised {
   margin-top: -125px;
 }
+
+.scroller-section {
+  overflow: scroll;
+  height: 92vh;
+  max-height: 100%;
+}

@@ -3,9 +3,14 @@
   flex-direction: column;
 }
 
+.inventory-update {
+  position: relative;
+}
+
 .inventory-transactions {
-  height: 72%;
   overflow-y: scroll;
+  max-height: 100%;
+  height: 100vh;
 }
 
 .pos-fixed {

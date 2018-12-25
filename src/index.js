@@ -13,6 +13,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 // Our styles
 import "./styles/custom.css";
+import Login from "./components/login";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -22,6 +23,7 @@ ReactDOM.render(
         <Switch>
           <Route path="/asset/:id" component={Asset} />
           <Route path="/assets" component={Assets} />
+          <Route path="/login" component={Login} />
           <Route path="/" component={Dashboard} />
         </Switch>
       </Container>

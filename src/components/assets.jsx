@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { getAssets, getAssetHistory } from "../services/data";
-import { OverlayPanel } from "primereact/overlaypanel";
 import { Link } from "react-router-dom";
 
 class Assets extends Component {
@@ -13,6 +12,7 @@ class Assets extends Component {
   async componentWillMount() {
     if (!this.props.assets) {
       const assets = await getAssets();
+      // const assetHistory = await getAssetHistory(assetId);
       this.setState({ assets });
     }
   }
@@ -35,26 +35,23 @@ class Assets extends Component {
     return assets.map((a, i) => (
       <tr key={a.assetId}>
         <td>
-          <Link to={`/asset/${a.assetId}`} className="badge badge-secondary">
+          <Link
+            to={{
+              pathname: `/asset/${a.assetId}`,
+              search: `?type=${a.assetType}`,
+              state: a
+            }}
+            className="badge badge-secondary"
+          >
             {a.assetId}
           </Link>
         </td>
         <td>{a.assetType}</td>
-        <td
-          onMouseEnter={e => this.getHistory(e, this[`asset${i}`], a.assetId)}
-          onMouseLeave={() => this.onLeave(this[`asset${i}`])}
-        >
+        <td>
+          {/* {this.state.assetHistory.map((h, i) => (
+            <p key={i}>{h.description}</p>
+          ))} */}
           {a.description}
-          <div className="content-section implementation">
-            <OverlayPanel
-              appendTo={document.body}
-              ref={el => (this[`asset${i}`] = el)}
-            >
-              {this.state.assetHistory.map((h, i) => (
-                <p key={i}>{h.description}</p>
-              ))}
-            </OverlayPanel>
-          </div>
         </td>
         <td>{a.quantity || 1}</td>
         <td>{a.status}</td>

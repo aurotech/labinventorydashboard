@@ -12,6 +12,32 @@ body {
   line-height: 1.471;
 }
 
+.field {
+  color: red;
+  text-transform: capitalize;
+  font-weight: bold;
+}
+
+.my-card {
+  background: #fff;
+  border: 1px solid lightgray;
+  padding: 20px;
+}
+
+.no-left-border {
+  border-left: none !important;
+}
+
+.my-card-sm {
+  background: #fff;
+  border: 1px solid lightgray;
+  padding: 10px;
+}
+
+.mt-0 {
+  margin-top: 0 !important;
+}
+
 .page-title {
   padding: 0;
   color: #fff;
@@ -47,9 +73,9 @@ body {
 }
 
 .table-scroll {
-  max-height: 300px;
+  max-height: 450px;
   overflow-y: scroll;
-  height: 300px;
+  height: 400px;
 }
 
 /* BOOTSTRAP */
@@ -102,7 +128,7 @@ tr td {
 }
 
 .top-block-raised {
-  margin-top: -73px;
+  margin-top: -73px !important;
   background: #fff;
 }
 
