@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Line } from "react-chartjs";
+import { getbatchAssetHistory } from "../../services/data";
+import { array } from "prop-types";
 
 class LineChart extends Component {
   constructor() {
@@ -7,7 +9,7 @@ class LineChart extends Component {
 
     this.state = {
       data: {
-        labels: ["10", "20", "30", "40", "50", "60", "70"],
+        labels: [],
         datasets: [
           {
             label: "Batch",
@@ -17,14 +19,48 @@ class LineChart extends Component {
             pointStrokeColor: "#fff",
             pointHighlightFill: "#fff",
             pointHighlightStroke: "rgba(151,187,205,1)",
-            data: [10, 55, 49, 45, 57, 68, 94]
+            data: []
           }
         ]
       }
     };
   }
 
-  componentDidMount() {}
+  async componentWillMount() {
+    const batchHistory = await getbatchAssetHistory(this.props.id);
+    this.getBatchData(batchHistory);
+  }
+
+  getBatchData(arr) {
+    const labelsAndData = {
+      labels: [],
+      data: []
+    };
+    arr.map(obj => {
+      labelsAndData.data.push(obj.quantity);
+      labelsAndData.labels.push(
+        new Date(obj.timestamp).toLocaleString("en-us", { month: "long" })
+      );
+    });
+
+    this.setState({
+      data: {
+        labels: labelsAndData.labels,
+        datasets: [
+          {
+            label: "Batch",
+            fillColor: "rgba(220,220,220,0)",
+            strokeColor: "#116EA5",
+            pointColor: "rgba(151,187,205,1)",
+            pointStrokeColor: "#fff",
+            pointHighlightFill: "#fff",
+            pointHighlightStroke: "rgba(151,187,205,1)",
+            data: labelsAndData.data
+          }
+        ]
+      }
+    });
+  }
 
   render() {
     return (
@@ -34,7 +70,10 @@ class LineChart extends Component {
           options={{
             responsive: true,
             animationSteps: 100,
-            bezierCurve: false
+            bezierCurve: false,
+            steppedLine: "after",
+            scaleShowGridLines: true,
+            scaleShowVerticalLines: true
           }}
           height="210"
           width="800"

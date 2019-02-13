@@ -17,21 +17,21 @@ class DoughnutChart extends React.Component {
   componentWillUpdate(nextProps) {
     if (this.props.assets === nextProps.assets) {
       this.props.assets.map(asset => {
-        asset.labels.map(lable => {
-          lable in this.slice
-            ? (this.slice[lable] += 1)
-            : (this.slice[lable] = 1);
+        asset.labels.map(label => {
+          label in this.slice
+            ? (this.slice[label] += 1)
+            : (this.slice[label] = 1);
         });
       });
     }
     let arr = [];
     for (let key in this.slice) {
-      const color = "#" + ((Math.random() * 0xffffff) << 0).toString(16);
+      const color = "#" + ((Math.random() * 0xff0000) << 0).toString(16);
       const s = {
         color,
         highlight: color,
         value: this.slice[key],
-        lable: key
+        label: key
       };
       arr.push(s);
     }
@@ -48,36 +48,23 @@ class DoughnutChart extends React.Component {
         <Doughnut
           data={this.state.data}
           options={{
+            title: {
+              display: true,
+              text: "Single Asset Division"
+            },
+            legend: {
+              display: true,
+              position: "top"
+            },
             animationEasing: "easeInSine",
             showTooltips: true,
             responsive: true,
-            tooltips: {
-              callbacks: {
-                title: function(tooltipItem, data) {
-                  console.log("object");
-                  return data["labels"][tooltipItem[0]["index"]];
-                },
-                label: function(tooltipItem, data) {
-                  return data["datasets"][0]["data"][tooltipItem["index"]];
-                },
-                afterLabel: function(tooltipItem, data) {
-                  var dataset = data["datasets"][0];
-                  var percent = Math.round(
-                    (dataset["data"][tooltipItem["index"]] /
-                      dataset["_meta"][0]["total"]) *
-                      100
-                  );
-                  return "(" + percent + "%)";
-                }
-              }
-            },
-            title: {
-              display: true,
-              text: "Chart.js Line Chart"
-            }
+            tooltipTitleFontColor: "#000",
+            percentageInnerCutout: 40,
+            maintainAspectRatio: false
           }}
-          height="120"
-          width="320"
+          height="220"
+          width="120"
         />
       </div>
     );

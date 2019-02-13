@@ -6,14 +6,15 @@ import Asset from "./components/asset";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Container from "./components/Container";
+import Login from "./components/login";
+
 // Using bootstrap, PrimeReact the UI libraries
 import "bootstrap/dist/css/bootstrap.css";
-import "primereact/resources/themes/nova-light/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+// import "primereact/resources/themes/nova-light/theme.css";
+// import "primereact/resources/primereact.min.css";
+// import "primeicons/primeicons.css";
 // Our styles
 import "./styles/custom.css";
-import Login from "./components/login";
 
 ReactDOM.render(
   <BrowserRouter>

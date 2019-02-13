@@ -9,6 +9,6 @@
 
 .scroller-section {
   overflow: scroll;
-  height: 92vh;
-  max-height: 100%;
+  height: 70vh;
+  max-height: 100vh;
 }
