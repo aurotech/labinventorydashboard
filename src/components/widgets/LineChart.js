@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Line } from "react-chartjs";
 import { getbatchAssetHistory } from "../../services/data";
-import { array } from "prop-types";
 
 class LineChart extends Component {
   constructor() {
@@ -26,7 +25,7 @@ class LineChart extends Component {
     };
   }
 
-  async componentWillMount() {
+  async componentWillReceiveProps() {
     const batchHistory = await getbatchAssetHistory(this.props.id);
     this.getBatchData(batchHistory);
   }
@@ -61,6 +60,10 @@ class LineChart extends Component {
       }
     });
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   console.log("Next Props:", nextProps);
+  // }
 
   render() {
     return (

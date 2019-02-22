@@ -235,12 +235,19 @@ class App extends Component {
                   <p className="box-heading">Total Single Assets</p>
                   <h3>{this.state.assets.length}</h3>
 
-                  <DoughnutChart assets={this.state.assets} />
+                  {this.state.assets && (
+                    <DoughnutChart assets={this.state.assets} />
+                  )}
                 </div>
                 <div className="col-6 data-block my-card">
                   <p className="box-heading">Total Batch Assets</p>
-                  <h3>{this.state.batchAssets.length}</h3>
-
+                  {this.state.batchAssets && (
+                    <h3>{this.state.batchAssets.length}</h3>
+                  )}
+                  {/* 
+                  {this.state.batchAssets && (
+                    <DoughnutChart assets={this.state.batchAssets} />
+                  )} */}
                   <DoughnutChart assets={this.state.batchAssets} />
                 </div>
 

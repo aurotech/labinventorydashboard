@@ -214,31 +214,16 @@ class Asset extends Component {
     });
   };
 
-  async onSubmit(assetId, asset) {
-    const res = await updateAsset(assetId, asset, this.state.asset.quantity);
-
-    if (res) {
-      setTimeout(() => {
-        this.getAssetsData();
-      }, 2000);
-
-      return;
-    }
-  }
-
   handleSubmit = async () => {
     this.setState({ active: true, open: false });
-    const result = await this.onSubmit(
-      this.state.asset.assetId,
-      this.state.temp
-    );
     try {
-      console.log("try block");
-      if (this.state.temp && result) {
-        this.setState({
-          asset: { ...this.state.asset, ...this.state.temp },
-          active: false
-        });
+      const result = await updateAsset(
+        this.state.asset.assetId,
+        this.state.temp,
+        this.state.asset.quantity
+      );
+      if (result) {
+        this.getAssetsData();
       }
     } catch (ex) {
       console.log("catch block");
@@ -273,15 +258,15 @@ class Asset extends Component {
                   <div className="d-flex">
                     <div className="p-2 m-5 bg-success text-white">
                       <span className="m-5"> Threshold</span>
-                      <a className="badge badge-dark">
+                      <span className="badge badge-dark">
                         {this.state.asset.threshold}
-                      </a>
+                      </span>
                     </div>
                     <div className="p-2 m-5 bg-warning text-white">
                       <span className="m-5"> Quantity</span>
-                      <a className="badge badge-dark">
+                      <span className="badge badge-dark">
                         {this.state.asset.quantity}
-                      </a>
+                      </span>
                     </div>
                   </div>
                 ) : null}

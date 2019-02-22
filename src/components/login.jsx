@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import Joi from "joi-browser";
 import "./login.css";
-import { signIn } from "../services/data";
+import { login } from "../services/data";
+import { timingSafeEqual } from "crypto";
 
 class Login extends Component {
   username = React.createRef();
@@ -26,18 +27,22 @@ class Login extends Component {
       .label("Password")
   };
 
+  componentDidMount() {
+    if (localStorage.getItem("labId")) {
+      this.props.history.replace("/");
+    }
+  }
+
   async handleSubmit(e) {
     e.preventDefault();
-    const c = {
+    const credentials = {
       username: this.username.current.value,
       password: this.password.current.value
     };
+
     try {
-      const res = await signIn(c);
-      if (res && res.token) {
-        console.log(res);
-        const { token } = res;
-        localStorage.setItem("labId", token.toString());
+      const res = await login(credentials);
+      if (res) {
         this.props.history.replace("/");
       }
     } catch (ex) {
@@ -61,7 +66,7 @@ class Login extends Component {
           <label htmlFor="password">Password</label>
           <input
             className="form-control"
-            type="text"
+            type="password"
             name="password"
             id="password"
             ref={this.password}

@@ -1,20 +1,6 @@
 import http from "axios";
 
-http.interceptors.request.use(
-  config => {
-    //   document.body.classList.add("loader-hidden");
-
-    if (!config.url.includes("login")) {
-      if (localStorage.getItem("labId")) {
-        config.headers["X-Access-Token"] = localStorage.getItem("labId");
-      } else {
-        window.location = "/login";
-      }
-    }
-    return config;
-  },
-  error => Promise.reject(error)
-);
+http.defaults.headers.common["X-Access-Token"] = localStorage.getItem("labId");
 
 http.interceptors.response.use(null, error => {
   // document.body.classList.add("loader-active");
@@ -30,6 +16,24 @@ http.interceptors.response.use(null, error => {
 
 const apiEndPoint = "http://ec2-54-89-116-114.compute-1.amazonaws.com:";
 
+export async function login(credentials) {
+  try {
+    const { data } = await http.post(apiEndPoint + "8000/login/", credentials);
+
+    if (data) {
+      localStorage.setItem("labId", data.token.toString());
+      return true;
+    }
+  } catch (ex) {
+    if (ex.response && ex.response.status === 404) console.log("Error");
+  }
+}
+
+export function isLoggedIn() {
+  if (localStorage.getItem("labId")) {
+    return true;
+  }
+}
 export async function getAssets() {
   const { data } = await http.get(apiEndPoint + "8000/assets");
   return data.assets;
@@ -43,24 +47,23 @@ export async function getbatchAssetHistory(id) {
 }
 
 export async function updateAsset(id, asset, amount) {
-  // Helper function to generate individual asset key which were edited
   const assets = assetUpdateParameterGenrator(id, asset, amount);
   const i = 0;
   return await assetUpdater([], i, assets);
 }
 
-function assetUpdater(arr, i, assets) {
-  if (i < assets.length) {
-    http.post(assets[i].url, assets[i].body).then(res => {
-      arr.push(res);
-      i++;
-      assetUpdater(arr, i, assets);
-    });
+async function assetUpdater(arr, i, assets) {
+  while (i < assets.length) {
+    let res = await http.post(assets[i].url, assets[i].body);
+    arr.push(res);
+    i++;
   }
   return arr;
 }
 
 function assetUpdateParameterGenrator(id, newAsset, oldAmount) {
+  // Helper function to generate individual asset key which were edited
+
   const arr = [];
   Object.keys(newAsset).map(key => {
     let property = "Edit" + key[0].toUpperCase() + key.slice(1);
@@ -105,11 +108,5 @@ export async function recentTransactions() {
   const { data } = await http.get(apiEndPoint + "8000/recentTransactions/");
 
   if (data && data.history) return data.history;
-  return [];
-}
-
-export async function signIn(credentials) {
-  const { data } = await http.post(apiEndPoint + "8000/login/", credentials);
-  if (data) return data;
   return [];
 }
