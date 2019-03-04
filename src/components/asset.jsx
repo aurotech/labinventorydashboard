@@ -286,6 +286,7 @@ class Asset extends Component {
                     asset={this.state.asset}
                     onChange={this.handleChange}
                     onSubmit={this.handleSubmit}
+                    assetType={this.state.asset.assetType}
                     fields={[
                       {
                         type: "text",
@@ -353,22 +354,13 @@ class Asset extends Component {
             </div>
             <div
               className={
-                "col-4 my-card " +
+                "col-4 my-card scroller-section" +
                 (this.assetType !== "Single" && "scroller-section")
               }
             >
               <p className="box-heading">Transaction History</p>
               <hr />
               <div className="p-left-30 p-10">
-                {/* {this.state.assetHistory.map((obj, i) => (
-                  <ul className="list-group" key={i}>
-                    <li className="list-group-item">
-                      {this.displayTransactions(obj, i)}
-                    </li>
-                    <br />
-                  </ul>
-                ))} */}
-
                 {this.state.assetHistory.map((obj, i) =>
                   this.displayTransactions(obj, i)
                 )}

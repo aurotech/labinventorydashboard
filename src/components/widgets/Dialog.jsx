@@ -62,6 +62,9 @@ export default class FormDialog extends Component {
                 defaultValue={obj.value}
                 fullWidth
                 // onChange={obj.onChange()}
+                disabled={
+                  this.props.assetType === "single" && obj.type === "number"
+                }
                 onChange={e => obj.onChange(obj.label.toLowerCase(), e)}
               />
             ))}
