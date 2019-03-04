@@ -60,7 +60,7 @@ class Assets extends Component {
       <div className={this.props.tableClasses}>
         <table
           className={
-            "rounded table table-striped" +
+            "rounded table tableFixHead table-striped" +
             (!this.props.tableClasses ? " top-block-raised" : "")
           }
         >

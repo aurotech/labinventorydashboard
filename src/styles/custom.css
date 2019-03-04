@@ -131,31 +131,36 @@ body {
   height: 400px;
 }
 
-/* BOOTSTRAP */
+.header-fixed {
+  width: 100%;
+}
+
 .table-striped > tbody > tr:nth-child(even) > td,
 .table-striped > tbody > tr:nth-child(even) > th {
   background-color: #367db3;
   color: #fff;
 }
 
-thead th {
-  padding: 15px !important;
-  height: 25px;
+.tableFixHead {
+  overflow-y: auto;
+  height: 100px;
+}
+.tableFixHead th {
+  position: sticky;
+  top: 0;
 }
 
-tbody tr th {
-  background-color: #eeeeee;
-  padding: 22px;
+/* Just common table stuff. Really. */
+table {
+  border-collapse: collapse;
+  width: 100%;
 }
-
-thead tr {
-  background-color: #eeeeee !important;
-  padding: 22px !important;
+th,
+td {
+  padding: 8px 16px;
 }
-
-tr td {
-  background-color: #f3f6f9;
-  padding: 10px !important;
+th {
+  background: #eee;
 }
 
 @media (min-width: 1200px) {

@@ -1,6 +1,15 @@
 import http from "axios";
 
-http.defaults.headers.common["X-Access-Token"] = localStorage.getItem("labId");
+// http.defaults.headers.common["X-Access-Token"] = getToken();
+
+http.interceptors.request.use(
+  config => {
+    //   document.body.classList.add("loader-hidden");
+    config.headers["X-Access-Token"] = localStorage.getItem("labId");
+    return config;
+  },
+  error => Promise.reject(error)
+);
 
 http.interceptors.response.use(null, error => {
   // document.body.classList.add("loader-active");
@@ -13,12 +22,17 @@ http.interceptors.response.use(null, error => {
     return Promise.reject(error);
   }
 });
-
+export function getToken() {
+  if (localStorage.getItem("labId")) {
+    return localStorage.getItem("labId");
+  }
+  return null;
+}
 const apiEndPoint = "http://ec2-54-89-116-114.compute-1.amazonaws.com:";
 
 export async function login(credentials) {
   try {
-    const { data } = await http.post(apiEndPoint + "8000/login/", credentials);
+    const { data } = await http.post(apiEndPoint + "8080/login/", credentials);
 
     if (data) {
       localStorage.setItem("labId", data.token.toString());
@@ -35,13 +49,13 @@ export function isLoggedIn() {
   }
 }
 export async function getAssets() {
-  const { data } = await http.get(apiEndPoint + "8000/assets");
+  const { data } = await http.get(apiEndPoint + "8080/assets");
   return data.assets;
 }
 
 export async function getbatchAssetHistory(id) {
   const { data } = await http.get(
-    apiEndPoint + "8000/batchAssetQuantityHistory/" + id
+    apiEndPoint + "8080/batchAssetQuantityHistory/" + id
   );
   return data.qtyHistory;
 }
@@ -90,14 +104,14 @@ function assetUpdateParameterGenrator(id, newAsset, oldAmount) {
 }
 
 export async function getAsset(id) {
-  const { data } = await http.get(apiEndPoint + "3000/api/LabAsset/" + id);
+  const { data } = await http.get(apiEndPoint + "80/api/LabAsset/" + id);
 
   if (data) return data;
   return [];
 }
 
 export async function getAssetHistory(id) {
-  const res = await http.get(apiEndPoint + "8000/assetHistory/" + id);
+  const res = await http.get(apiEndPoint + "8080/assetHistory/" + id);
   const { data } = res;
 
   if (data && data.history) return data.history;
@@ -105,7 +119,7 @@ export async function getAssetHistory(id) {
 }
 
 export async function recentTransactions() {
-  const { data } = await http.get(apiEndPoint + "8000/recentTransactions/");
+  const { data } = await http.get(apiEndPoint + "8080/recentTransactions/");
 
   if (data && data.history) return data.history;
   return [];

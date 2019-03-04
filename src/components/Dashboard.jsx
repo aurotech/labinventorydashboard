@@ -31,9 +31,10 @@ class App extends Component {
 
   displayTransactions(asset, i) {
     const date = (
-      new Date(asset.timestamp).getDate() +
+      new Date(asset.timestamp).getMonth() +
+      1 +
       "/" +
-      (new Date(asset.timestamp).getMonth() + 1) +
+      new Date(asset.timestamp).getDate() +
       "/" +
       new Date(asset.timestamp).getFullYear()
     ).toString();

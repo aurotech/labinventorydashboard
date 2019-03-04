@@ -61,10 +61,6 @@ class LineChart extends Component {
     });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log("Next Props:", nextProps);
-  // }
-
   render() {
     return (
       <div>
