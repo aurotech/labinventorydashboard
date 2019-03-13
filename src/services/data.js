@@ -72,6 +72,7 @@ async function assetUpdater(arr, i, assets) {
     arr.push(res);
     i++;
   }
+  console.log(arr);
   return arr;
 }
 
@@ -97,7 +98,7 @@ function assetUpdateParameterGenrator(id, newAsset, oldAmount) {
       }
       newAsset[key] = Math.abs(newAsset[key] - oldAmount);
     }
-    url = `${apiEndPoint}3000/api/Asset${property}Transaction`;
+    url = `${apiEndPoint}80/api/Asset${property}Transaction`;
     arr.push({ body: { asset: id, [objKey]: newAsset[key] }, url });
   });
   return arr;

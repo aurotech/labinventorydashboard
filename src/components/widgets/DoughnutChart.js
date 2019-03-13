@@ -2,41 +2,34 @@ import React from "react";
 import { Doughnut } from "react-chartjs";
 
 class DoughnutChart extends React.Component {
-  slice = {};
+  chartPieces = {};
   state = {
     data: []
   };
 
-  constructor() {
-    super();
-    this.state = { data: [] };
-  }
-  // static getDerivedStateFromProps(nextProps, prevState) {
-  //   if (nextProps.assets !== prevState.assets) {
-  //     return { assets: nextProps.assets };
-  //   }
-  //   return null;
-  // }
-
   componentDidUpdate(nextProps) {
     if (this.props.assets) {
+      this.chartPieces["other"] = 0;
+
       this.props.assets.map(asset => {
-        asset.labels.forEach(label => {
-          if (label in this.slice) {
-            this.slice[label] += 1;
+        if (asset.labels.length) {
+          if (asset.labels[0] in this.chartPieces) {
+            this.chartPieces[asset.labels[0]] += 1;
           } else {
-            this.slice[label] = 1;
+            this.chartPieces[asset.labels[0]] = 1;
           }
-        });
+        } else {
+          this.chartPieces["other"] += 1;
+        }
       });
     }
     let arr = [];
-    for (let key in this.slice) {
+    for (let key in this.chartPieces) {
       const color = "#" + ((Math.random() * 0xff0000) << 0).toString(16);
       const s = {
         color,
         highlight: color,
-        value: this.slice[key],
+        value: this.chartPieces[key],
         label: key
       };
       arr.push(s);

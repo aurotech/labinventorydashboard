@@ -3,7 +3,7 @@ import * as ReactDOM from "react-dom";
 import Dashboard from "./components/Dashboard";
 import Assets from "./components/assets";
 import Asset from "./components/asset";
-import { BrowserRouter, Switch, Route, HashRouter } from "react-router-dom";
+import { Switch, Route, HashRouter } from "react-router-dom";
 import Navbar from "./components/navbar";
 import Container from "./components/Container";
 import Login from "./components/login";

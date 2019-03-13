@@ -6,12 +6,14 @@ import DoughnutChart from "./widgets/DoughnutChart";
 import { getAssets, recentTransactions } from "../services/data";
 import { Link } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
+import { dateCreator } from "./widgets/util";
 
 class App extends Component {
   state = {
     assets: [],
     lowInventory: [],
     recents: [],
+    singleAssets: [],
     batchAssets: [],
     active: true
   };
@@ -19,25 +21,23 @@ class App extends Component {
   async componentWillMount() {
     const assets = await getAssets();
     const recents = await recentTransactions();
-    const batches = [];
+    let batches = [];
+    let singles = [];
     assets.filter(a => {
-      if (a.assetType === "Batch") {
-        batches.push(a);
-      }
+      a.assetType === "Batch" ? batches.push(a) : singles.push(a);
     });
-    this.setState({ assets, recents, batchAssets: batches, active: false });
+    this.setState({
+      assets,
+      recents,
+      singleAssets: singles,
+      batchAssets: batches,
+      active: false
+    });
     this.checkLowInvenntory();
   }
 
   displayTransactions(asset, i) {
-    const date = (
-      new Date(asset.timestamp).getMonth() +
-      1 +
-      "/" +
-      new Date(asset.timestamp).getDate() +
-      "/" +
-      new Date(asset.timestamp).getFullYear()
-    ).toString();
+    const date = dateCreator(asset.timestamp);
 
     if (asset["transactionClass"] === "AssetEditLabelsTransaction") {
       return (
@@ -49,15 +49,15 @@ class App extends Component {
           <p>
             {asset.oldLabels.length > 0 && "Old Labels:"}
             {asset.oldLabels.length > 0 &&
-              asset.oldLabels.map((l, i) => (
-                <span key={i}>{" " + l + ", "}</span>
+              asset.oldLabels.map((label, index) => (
+                <span key={index}>{" " + label + ", "}</span>
               ))}
           </p>
           <p>
             {asset.newLabels.length > 0 && "New Labels:"}
             {asset.newLabels.length > 0 &&
-              asset.newLabels.map((l, i) => (
-                <span key={i}>{" " + l + " "}</span>
+              asset.newLabels.map((label, index) => (
+                <span key={index}>{" " + label + " "}</span>
               ))}
           </p>
         </React.Fragment>
@@ -234,10 +234,12 @@ class App extends Component {
               <div className="row">
                 <div className="col-6 data-block my-card">
                   <p className="box-heading">Total Single Assets</p>
-                  <h3>{this.state.assets.length}</h3>
+                  <h3>
+                    {this.state.assets.length - this.state.batchAssets.length}
+                  </h3>
 
                   {this.state.assets && (
-                    <DoughnutChart assets={this.state.assets} />
+                    <DoughnutChart assets={this.state.singleAssets} />
                   )}
                 </div>
                 <div className="col-6 data-block my-card">
@@ -249,7 +251,7 @@ class App extends Component {
                   {this.state.batchAssets && (
                     <DoughnutChart assets={this.state.batchAssets} />
                   )} */}
-                  <DoughnutChart assets={this.state.batchAssets} />
+                  <DoughnutChart assets={this.state.batchAssets} batch={true} />
                 </div>
 
                 <div className="data-block">

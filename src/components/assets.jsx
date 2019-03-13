@@ -50,7 +50,6 @@ class Assets extends Component {
         <td>{a.quantity || 1}</td>
         <td>{a.status}</td>
         <td>{a.timeLastUpdated.slice(0, 10)}</td>
-        <td>{a.timeLastUpdated.slice(0, 10)}</td>
       </tr>
     ));
   }
@@ -71,7 +70,6 @@ class Assets extends Component {
               <th scope="col">Description</th>
               <th scope="col">Quantity</th>
               <th scope="col">Location</th>
-              <th scope="col">Last Scanned</th>
               <th scope="col">Last Updated</th>
             </tr>
           </thead>
