@@ -3,10 +3,6 @@
   background: #fff;
 }
 
-.b-raised {
-  margin-top: -125px;
-}
-
 .scroller-section {
   overflow: scroll;
   height: 70vh;

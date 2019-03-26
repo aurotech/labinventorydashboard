@@ -1,7 +1,14 @@
-.card {
+.card-login {
   width: 50%;
   margin: 0 auto;
-  background: #fff;
+  color: #fff;
+  background: #235690 !important;
+  border: none;
+  border-radius: 0;
+}
+
+.mt-20 {
+  margin-top: 20px;
 }
 
 .form-control:focus {

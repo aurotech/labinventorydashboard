@@ -16,10 +16,14 @@ import "bootstrap/dist/css/bootstrap.css";
 // import "primeicons/primeicons.css";
 // Our styles
 import "./styles/custom.css";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.render(
   <HashRouter>
-    <div>
+    <React.Fragment>
+      <ToastContainer />
+
       <Navbar />
       <Container>
         <Switch>
@@ -29,7 +33,7 @@ ReactDOM.render(
           <ProtectedRoute path="/" component={Dashboard} />
         </Switch>
       </Container>
-    </div>
+    </React.Fragment>
   </HashRouter>,
   document.getElementById("root")
 );

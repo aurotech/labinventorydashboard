@@ -1,12 +1,21 @@
 import React, { Component } from "react";
 import LineChart from "./widgets/LineChart";
 import "./asset.css";
-import { getAsset, getAssetHistory, updateAsset } from "../services/data";
 import * as qs from "query-string";
 import FormDialog from "./widgets/Dialog";
 import Chip from "@material-ui/core/Chip";
-import { Icon } from "@material-ui/core";
+import { Icon, Fab } from "@material-ui/core";
 import LoadingOverlay from "react-loading-overlay";
+import { toast } from "react-toastify";
+import { Transactions } from "./transactions";
+import Button from "@material-ui/core/Button";
+
+import {
+  getAsset,
+  getAssetHistory,
+  updateAsset,
+  editLabelsTransaction
+} from "../services/data";
 
 class Asset extends Component {
   assetType;
@@ -20,8 +29,11 @@ class Asset extends Component {
     asset: {},
     showDialog: false,
     open: false,
+    forLabels: false,
     active: true,
-    temp: {}
+    temp: {},
+    tempLabel: "",
+    anchorEl: null
   };
 
   componentWillMount() {
@@ -29,172 +41,16 @@ class Asset extends Component {
   }
 
   async getAssetsData() {
-    const assetHistory = await getAssetHistory(this.props.match.params.id);
-    const asset = await getAsset(this.props.match.params.id);
-
-    this.setState({
-      assetHistory,
-      asset,
-      active: false
-    });
-  }
-
-  displayTransactions(asset, i) {
-    const date = (
-      new Date(asset.timestamp).getMonth() +
-      1 +
-      "/" +
-      new Date(asset.timestamp).getDate() +
-      "/" +
-      new Date(asset.timestamp).getFullYear()
-    ).toString();
-
-    if (asset["transactionType"] === "Increase in Inventory") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-success">
-              Invenntory added on
-              {" " + date}
-            </span>
-          </p>
-          <p>
-            {" "}
-            Old Amount: <span className="field-warning">
-              {asset.oldAmount}
-            </span>{" "}
-          </p>
-          <p>
-            New Amount: <span className="field-red">{asset.amount}</span>{" "}
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Asset Assignment") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue">
-              Asset assignment changed on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Update Comment") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-red">
-              Comment updated on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Update Location") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-warning">
-              Location updated on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Asset Removal") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-danger">
-              Asset Removed on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Asset Return") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue">
-              Asset Returned on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Decrease in Inventory") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-danger">
-              Inventory decreased on
-              {" " + date}
-            </span>
-          </p>
-          <p>
-            {" "}
-            Old Amount: <span className="field-warning">
-              {asset.oldAmount}
-            </span>{" "}
-          </p>
-          <p>
-            New Amount: <span className="field-red">{asset.amount}</span>{" "}
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Update Description") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            Description updated on
-            {" " + date + " "} from
-            <br />
-            <span className="field-warning">{asset.newDescription}</span>
-            <span className="field-blue">
-              <br /> to {asset.oldDescription}
-            </span>
-          </p>
-
-          <hr />
-        </React.Fragment>
-      );
-    } else if (asset["transactionType"] === "Asset Creation") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-green">
-              Asset was created on
-              {" " + date}
-            </span>
-          </p>
-          <hr />
-        </React.Fragment>
-      );
-    } else if (
-      asset["transactionType"] ===
-      "Asset Recreation, Restoration to Backup Point"
-    ) {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-warning">
-              Asset was re-created / restored on
-              {" " + date}
-            </span>
-          </p>
-
-          <hr />
-        </React.Fragment>
-      );
+    try {
+      const assetHistory = await getAssetHistory(this.props.match.params.id);
+      const asset = await getAsset(this.props.match.params.id);
+      this.setState({
+        assetHistory,
+        asset,
+        active: false
+      });
+    } catch (ex) {
+      toast.error("Server unavailable. Please try againn later.");
     }
   }
 
@@ -203,33 +59,100 @@ class Asset extends Component {
   };
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ open: false, forLabels: false });
   };
 
-  handleDelete = val => {};
+  openFormDialog() {
+    this.setState({ forLabels: !this.state.forLabels });
+  }
+
+  handleDelete(val) {
+    console.log(val);
+  }
 
   handleChange = (name, event) => {
-    this.setState({
-      temp: { ...this.state.temp, [name]: event.target.value }
-    });
+    const { temp } = this.state;
+    temp[name] = event.target.value;
+    this.setState({ temp });
   };
 
   handleSubmit = async () => {
-    this.setState({ active: true, open: false });
-    try {
-      const result = await updateAsset(
-        this.state.asset.assetId,
-        this.state.temp,
-        this.state.asset.quantity
-      );
-      if (result) {
-        this.getAssetsData();
+    if (Object.keys(this.state.temp).length > 0) {
+      this.setState({ active: true, open: false });
+
+      try {
+        const result = await updateAsset(
+          this.state.asset.assetId,
+          this.state.temp,
+          this.state.asset.quantity
+        );
+        if (result) {
+          this.getAssetsData();
+          this.setState({ temp: {} });
+        }
+      } catch (ex) {
+        this.setState({ active: false });
       }
-    } catch (ex) {
-      console.log("catch block");
-      this.setState({ active: false });
+    } else {
+      this.setState({ open: false });
     }
   };
+
+  async editLabels(asset, mode) {
+    // console.clear();
+    let { labels, assetId } = asset;
+    let tempLabel = this.state.temp.label;
+    let oldAsset = JSON.parse(JSON.stringify(asset));
+    const tempObj = { asset: assetId };
+
+    if (mode === "delete") {
+      labels.splice(labels.indexOf(tempLabel), 1);
+      tempObj["newLabels"] = JSON.stringify(labels);
+      asset.labels = labels;
+      this.setState({ asset });
+
+      try {
+        const result = await editLabelsTransaction(tempObj);
+        if (result) {
+          toast.warning(
+            `${tempLabel} was removed sucessfully from asset's labels`
+          );
+          this.getAssetsData();
+        }
+      } catch (ex) {
+        this.setState({ asset: oldAsset });
+        toast.error("Something went wrong. Please try again later.");
+      }
+    } else {
+      if (this.state.temp.label) {
+        tempObj["newLabels"] = JSON.stringify([
+          ...labels,
+          this.state.temp.label
+        ]);
+        asset.labels.push(tempLabel);
+        this.setState({ forLabels: !this.state.forLabels, asset });
+        try {
+          const result = await editLabelsTransaction(tempObj);
+          if (result)
+            toast.success("Label: " + tempLabel + " was added successfully");
+          this.getAssetsData();
+        } catch (ex) {
+          toast.error("Something went wrong. Please try again later.");
+        }
+      }
+    }
+  }
+
+  generateFields(arr) {
+    return arr.map(label => {
+      return {
+        type: label === "quantity" || label === "threshold" ? "number" : "text",
+        label: label[0].toUpperCase() + label.slice(1),
+        value: this.state.asset[label],
+        onChange: this.handleChange
+      };
+    });
+  }
 
   render() {
     return (
@@ -250,123 +173,150 @@ class Asset extends Component {
         }}
       >
         <div className="asset-header b-raised my-card">
-          <div className="row mt-25">
-            <div className="col-8">
-              <div className="d-flex">
-                <h3>Asset {this.props.match.params.id}</h3>
-                {this.assetType !== "Single" ? (
-                  <div className="d-flex">
-                    <div className="p-2 m-5 bg-success text-white">
-                      <span className="m-5"> Threshold</span>
-                      <span className="badge badge-dark">
-                        {this.state.asset.threshold}
-                      </span>
+          {
+            <div
+              className={
+                "row mt-25 " +
+                (this.assetType === "Batch" ? "sec-batch-scroll" : "sec-scroll")
+              }
+            >
+              <div className="col-8">
+                <div className="d-flex">
+                  <h3>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className="mr-15"
+                      onClick={() => this.props.history.goBack()}
+                    >
+                      {<Icon>keyboard_backspace</Icon>}
+                    </Button>
+                    Asset {this.props.match.params.id}
+                  </h3>
+                  <br />
+                  {this.assetType !== "Single" ? (
+                    <div className="d-flex">
+                      <div className="p-2 m-5 bg-success text-white">
+                        <span className="m-5"> Threshold</span>
+                        <span className="badge badge-dark">
+                          {this.state.asset.threshold}
+                        </span>
+                      </div>
+                      <div className="p-2 m-5 bg-warning text-white">
+                        <span className="m-5"> Quantity</span>
+                        <span className="badge badge-dark">
+                          {this.state.asset.quantity}
+                        </span>
+                      </div>
                     </div>
-                    <div className="p-2 m-5 bg-warning text-white">
-                      <span className="m-5"> Quantity</span>
-                      <span className="badge badge-dark">
-                        {this.state.asset.quantity}
-                      </span>
+                  ) : null}
+                </div>
+                <div className="my-card box-shadow">
+                  <span
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between"
+                    }}
+                  >
+                    <h3>Details:</h3>
+                    <FormDialog
+                      // ASSET DETTAILS EDIT DIALOG
+                      open={this.state.open}
+                      onClick={() => this.handleClickOpen()}
+                      button={
+                        <Fab
+                          color="primary"
+                          size="small"
+                          onClick={() => this.handleClickOpen()}
+                        >
+                          <Icon>edit_icon</Icon>
+                        </Fab>
+                      }
+                      asset={this.state.asset}
+                      onChange={this.handleChange}
+                      onSubmit={this.handleSubmit}
+                      assetType={this.state.asset.assetType}
+                      title={"You can change the details here"}
+                      fields={this.generateFields([
+                        "description",
+                        "status",
+                        "comment",
+                        "quantity",
+                        "threshold"
+                      ])}
+                    />
+                  </span>
+                  <hr />
+                  {this.state.asset.description && (
+                    <div>
+                      <h5>
+                        Description:
+                        <span className="details">
+                          {" " + this.state.asset.description}
+                        </span>
+                      </h5>
+                      <h5>
+                        Status:
+                        <span className="details">
+                          {" " + this.state.asset.status}
+                        </span>
+                      </h5>
                     </div>
-                  </div>
-                ) : null}
-              </div>
-              <div className="my-card box-shadow">
-                <span
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between"
-                  }}
-                >
-                  <h3>Details:</h3>
+                  )}
+                  {this.state.asset.labels &&
+                    this.state.asset.labels.map(val => (
+                      <Chip
+                        key={val}
+                        deleteIcon={<Icon>cancel</Icon>}
+                        label={val}
+                        onDelete={() =>
+                          this.editLabels(this.state.asset, "delete")
+                        }
+                      />
+                    ))}
                   <FormDialog
-                    open={this.state.open}
-                    onClick={this.handleClickOpen}
-                    buttonType={"fab"}
+                    // FORM LABELS EDIT DIALOG
+                    styles={{ display: "inline" }}
+                    open={this.state.forLabels}
+                    onClick={() => this.openFormDialog()}
+                    button={
+                      <Chip
+                        label={<Icon color="action">add_circle</Icon>}
+                        onClick={() => this.openFormDialog()}
+                      />
+                    }
                     asset={this.state.asset}
                     onChange={this.handleChange}
-                    onSubmit={this.handleSubmit}
+                    submitButtonTitle={"Add"}
+                    onSubmit={() => this.editLabels(this.state.asset)}
                     assetType={this.state.asset.assetType}
+                    title={"Add another label"}
                     fields={[
                       {
                         type: "text",
-                        label: "Description",
-                        value: this.state.asset.description,
-                        onChange: this.handleChange
-                      },
-                      {
-                        type: "text",
-                        label: "Status",
-                        value: this.state.asset.status,
-                        onChange: this.handleChange
-                      },
-                      {
-                        type: "text",
-                        label: "Comment",
-                        value: this.state.asset.comment,
-                        onChange: this.handleChange
-                      },
-                      {
-                        type: "number",
-                        label: "Quantity",
-                        value: this.state.asset.quantity,
-                        onChange: this.handleChange
-                      },
-                      {
-                        type: "number",
-                        label: "Threshold",
-                        value: this.state.asset.threshold,
+                        label: "Label",
                         onChange: this.handleChange
                       }
                     ]}
                   />
-                </span>
-                <hr />
-                <h5>
-                  Description:
-                  <span className="details">
-                    {this.state.asset.description}
-                  </span>
-                </h5>
-                <h5>
-                  Status:
-                  <span className="details">{this.state.asset.status}</span>
-                </h5>
-                {this.state.asset.labels &&
-                  this.state.asset.labels.map(val => (
-                    <Chip
-                      key={val}
-                      deleteIcon={<Icon>cancel</Icon>}
-                      label={val}
-                      onDelete={this.handleDelete(val)}
-                    />
-                  ))}
-              </div>
-              <br />
-              {this.assetType !== "Single" ? (
-                <div className=" my-card box-shadow">
-                  <p className="box-heading">Inventory OverTime</p>
-                  <hr />
-                  {/* <BarChart /> */}
-                  <LineChart id={this.props.match.params.id} />
                 </div>
-              ) : null}
-            </div>
-            <div
-              className={
-                "col-4 my-card scroller-section" +
-                (this.assetType !== "Single" && "scroller-section")
-              }
-            >
-              <p className="box-heading">Transaction History</p>
-              <hr />
-              <div className="p-left-30 p-10">
-                {this.state.assetHistory.map((obj, i) =>
-                  this.displayTransactions(obj, i)
-                )}
+                <br />
+                {this.assetType !== "Single" ? (
+                  <div className=" my-card box-shadow">
+                    <p className="box-heading">Inventory OverTime</p>
+                    <hr />
+                    {/* <BarChart /> */}
+                    <LineChart id={this.props.match.params.id} />
+                  </div>
+                ) : null}
               </div>
+
+              <Transactions
+                data={this.state.assetHistory}
+                assetId={this.state.asset.assetId}
+              />
             </div>
-          </div>
+          }
         </div>
       </LoadingOverlay>
     );

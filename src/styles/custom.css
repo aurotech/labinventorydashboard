@@ -19,10 +19,23 @@ body {
   color: #16659b;
 }
 
+.b-raised {
+  margin-top: -90px;
+}
+
 .field-red {
   color: red;
   text-transform: capitalize;
   font-weight: bold;
+}
+.field-purple {
+  color: rgb(90, 17, 226);
+  text-transform: capitalize;
+  font-weight: bold;
+  text-decoration: none !important;
+}
+.field-purple:hover {
+  color: black;
 }
 .field-green {
   color: rgb(66, 218, 47);
@@ -60,6 +73,11 @@ body {
   border-radius: 5px;
 }
 
+.pos-fixed {
+  position: fixed;
+  z-index: 1000;
+}
+
 .circle {
   height: 10%;
   width: 10%;
@@ -89,16 +107,22 @@ body {
 .m-5 {
   margin: 5px !important;
 }
+.mr-15 {
+  margin-right: 15px !important;
+}
 
 .page-title {
   padding: 0;
-  color: #ffbb00;
+  color: #255991;
   font-weight: 700;
-  font-size: 40px;
+  font-size: 38px;
 }
 
 .border-gray-right {
   border-right: 1px solid lightgray;
+}
+.border-gray {
+  border: 1px solid lightgray;
 }
 
 .d-block {
@@ -111,6 +135,9 @@ body {
 
 .m-10 {
   margin: 10px;
+}
+.mb-10 {
+  margin-bottom: 10px;
 }
 .mt-25 {
   margin-top: 25px;
@@ -126,9 +153,8 @@ body {
 }
 
 .table-scroll {
-  max-height: 450px;
+  max-height: 472px;
   overflow-y: scroll;
-  height: 400px;
 }
 
 .header-fixed {
@@ -179,10 +205,9 @@ th {
 
 .backgroung-img {
   background-image: url("../assets/banner.jpg");
-  background-position: center;
   background-repeat: no-repeat;
-  height: 256px;
-  background-size: cover;
+  height: 260px;
+  background-size: contain;
 }
 
 .top-block-raised {
@@ -210,4 +235,38 @@ th {
 
 .border-gray {
   border: 1px solid lightgray;
+}
+
+/* INVENTORY TRANNSACTIONS BLOCK STYLES */
+
+.row-itmes-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-update {
+  overflow-y: scroll;
+  max-height: 20%;
+  position: relative;
+}
+
+.inventory-transactions {
+  overflow-y: scroll;
+  max-height: 100vh;
+}
+
+.scroll-card {
+  height: 100%;
+}
+
+.sec-scroll {
+  min-height: 40vh;
+  max-height: 50%;
+}
+.sec-batch-scroll {
+  max-height: 75vh;
+}
+
+.pos-fixed {
+  position: fixed;
 }

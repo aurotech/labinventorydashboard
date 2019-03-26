@@ -6,8 +6,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Fab from "@material-ui/core/Fab";
-import Icon from "@material-ui/core/Icon";
 
 export default class FormDialog extends Component {
   state = {
@@ -23,33 +21,15 @@ export default class FormDialog extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.buttonType !== "fab" ? (
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => this.props.onClick()}
-          >
-            Open form dialog
-          </Button>
-        ) : (
-          <Fab
-            color="primary"
-            size="small"
-            onClick={() => this.props.onClick()}
-          >
-            <Icon>edit_icon</Icon>
-          </Fab>
-        )}
+      <div style={this.props.styles}>
+        {this.props.button}
 
         <Dialog
           open={this.props.open}
           onClose={() => this.props.onClick()}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">
-            You can change the details here
-          </DialogTitle>
+          <DialogTitle id="form-dialog-title">{this.props.title}</DialogTitle>
           <DialogContent>
             <DialogContentText>Edit the asset details here:</DialogContentText>
             {this.props.fields.map((obj, i) => (
@@ -61,65 +41,21 @@ export default class FormDialog extends Component {
                 type={obj.type}
                 defaultValue={obj.value}
                 fullWidth
-                // onChange={obj.onChange()}
-                disabled={
+                hidden={
                   this.props.assetType === "single" && obj.type === "number"
                 }
                 onChange={e => obj.onChange(obj.label.toLowerCase(), e)}
               />
             ))}
-            {/* <TextField
-              margin="dense"
-              id="status"
-              label="Status"
-              type="text"
-              defaultValue={this.state.asset.status}
-              fullWidth
-              onChange={e => this.props.onChange("status", e)}
-            />
-            <TextField
-              margin="dense"
-              id="desc"
-              label="Description"
-              type="text"
-              defaultValue={this.state.asset.description}
-              fullWidth
-              onChange={e => this.props.onChange("description", e)}
-            />
-            <TextField
-              margin="dense"
-              id="comment"
-              label="Comment"
-              type="text"
-              defaultValue={this.state.asset.comment}
-              fullWidth
-              onChange={e => this.props.onChange("comment", e)}
-            />
-            <TextField
-              margin="dense"
-              id="quantity"
-              label="Quantity"
-              type="text"
-              defaultValue={this.state.asset.quantity}
-              fullWidth
-              onChange={e => this.props.onChange("quantity", e)}
-            />
-            <TextField
-              margin="dense"
-              id="threshold"
-              label="Threshold"
-              type="text"
-              defaultValue={this.state.asset.threshold}
-              fullWidth
-              onChange={e => this.props.onChange("threshold", e)}
-            /> */}
           </DialogContent>
           <DialogActions>
             <Button onClick={() => this.props.onClick()} color="primary">
               Cancel
             </Button>
             <Button onClick={() => this.props.onSubmit()} color="primary">
-              Save
+              {this.props.submitButtonTitle
+                ? this.props.submitButtonTitle
+                : "Save"}
             </Button>
           </DialogActions>
         </Dialog>

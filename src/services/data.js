@@ -1,10 +1,8 @@
 import http from "axios";
-
-// http.defaults.headers.common["X-Access-Token"] = getToken();
+import { toast } from "react-toastify";
 
 http.interceptors.request.use(
   config => {
-    //   document.body.classList.add("loader-hidden");
     config.headers["X-Access-Token"] = localStorage.getItem("labId");
     return config;
   },
@@ -12,8 +10,6 @@ http.interceptors.request.use(
 );
 
 http.interceptors.response.use(null, error => {
-  // document.body.classList.add("loader-active");
-
   if (
     error.response &&
     error.response.status >= 400 &&
@@ -22,25 +18,13 @@ http.interceptors.response.use(null, error => {
     return Promise.reject(error);
   }
 });
+const apiEndPoint = "http://ec2-54-89-116-114.compute-1.amazonaws.com:";
+
 export function getToken() {
   if (localStorage.getItem("labId")) {
     return localStorage.getItem("labId");
   }
   return null;
-}
-const apiEndPoint = "http://ec2-54-89-116-114.compute-1.amazonaws.com:";
-
-export async function login(credentials) {
-  try {
-    const { data } = await http.post(apiEndPoint + "8080/login/", credentials);
-
-    if (data) {
-      localStorage.setItem("labId", data.token.toString());
-      return true;
-    }
-  } catch (ex) {
-    if (ex.response && ex.response.status === 404) console.log("Error");
-  }
 }
 
 export function isLoggedIn() {
@@ -48,37 +32,84 @@ export function isLoggedIn() {
     return true;
   }
 }
+
+export async function login(credentials) {
+  const result = await http.post(apiEndPoint + "8080/login/", credentials);
+
+  if (result.data) {
+    localStorage.setItem("useranme", credentials.username);
+    localStorage.setItem("labId", result.data.token.toString());
+    return true;
+  }
+  return false;
+}
+
 export async function getAssets() {
-  const { data } = await http.get(apiEndPoint + "8080/assets");
-  return data.assets;
+  try {
+    const { data } = await http.get(apiEndPoint + "8080/assets");
+    return data.assets;
+  } catch (ex) {
+    return ex;
+  }
 }
 
 export async function getbatchAssetHistory(id) {
-  const { data } = await http.get(
-    apiEndPoint + "8080/batchAssetQuantityHistory/" + id
-  );
-  return data.qtyHistory;
+  try {
+    const { data } = await http.get(
+      apiEndPoint + "8080/batchAssetQuantityHistory/" + id
+    );
+    return data.qtyHistory;
+  } catch (ex) {
+    return ex;
+  }
 }
 
 export async function updateAsset(id, asset, amount) {
   const assets = assetUpdateParameterGenrator(id, asset, amount);
   const i = 0;
-  return await assetUpdater([], i, assets);
+  try {
+    return await assetUpdater([], i, assets);
+  } catch (ex) {
+    return ex;
+  }
+}
+
+export async function editLabelsTransaction(obj) {
+  // try {
+  //   const {data}= await http.post(
+  //     apiEndPoint + "80/api/AssetEditLabelsTransaction/",
+  //     obj
+  //   );
+  //   return data;
+  // } catch (ex) {
+  //   return ex;
+  // }
+
+  return await http.post(
+    apiEndPoint + "80/api/AssetEditLabelsTransaction/",
+    obj
+  );
 }
 
 async function assetUpdater(arr, i, assets) {
   while (i < assets.length) {
-    let res = await http.post(assets[i].url, assets[i].body);
-    arr.push(res);
+    try {
+      let res = await http.post(assets[i].url, assets[i].body);
+      arr.push(res);
+      toast.success(
+        assets[i].field.toUpperCase() + "  was updated successfully."
+      );
+    } catch (ex) {
+      toast.error("Unable update " + assets[i].property + ".Pleasd try again.");
+    }
     i++;
   }
-  console.log(arr);
+  toast.info("Updating transaction history");
+
   return arr;
 }
 
 function assetUpdateParameterGenrator(id, newAsset, oldAmount) {
-  // Helper function to generate individual asset key which were edited
-
   const arr = [];
   Object.keys(newAsset).map(key => {
     let property = "Edit" + key[0].toUpperCase() + key.slice(1);
@@ -99,29 +130,46 @@ function assetUpdateParameterGenrator(id, newAsset, oldAmount) {
       newAsset[key] = Math.abs(newAsset[key] - oldAmount);
     }
     url = `${apiEndPoint}80/api/Asset${property}Transaction`;
-    arr.push({ body: { asset: id, [objKey]: newAsset[key] }, url });
+    arr.push({
+      body: { asset: id, [objKey]: newAsset[key] },
+      url,
+      property,
+      field: key
+    });
   });
   return arr;
 }
 
 export async function getAsset(id) {
-  const { data } = await http.get(apiEndPoint + "80/api/LabAsset/" + id);
+  try {
+    const { data } = await http.get(apiEndPoint + "80/api/LabAsset/" + id);
 
-  if (data) return data;
-  return [];
+    if (data) return data;
+    return [];
+  } catch (ex) {
+    return ex;
+  }
 }
 
 export async function getAssetHistory(id) {
-  const res = await http.get(apiEndPoint + "8080/assetHistory/" + id);
-  const { data } = res;
+  try {
+    const res = await http.get(apiEndPoint + "8080/assetHistory/" + id);
+    const { data } = res;
 
-  if (data && data.history) return data.history;
-  return [];
+    if (data && data.history) return data.history;
+    return [];
+  } catch (ex) {
+    return ex;
+  }
 }
 
 export async function recentTransactions() {
-  const { data } = await http.get(apiEndPoint + "8080/recentTransactions/");
+  try {
+    const { data } = await http.get(apiEndPoint + "8080/recentTransactions/");
 
-  if (data && data.history) return data.history;
-  return [];
+    if (data && data.history) return data.history;
+    return [];
+  } catch (ex) {
+    return ex;
+  }
 }

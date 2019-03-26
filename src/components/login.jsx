@@ -1,15 +1,12 @@
-import React, { Component } from "react";
+import React from "react";
 import Joi from "joi-browser";
 import "./login.css";
 import { login } from "../services/data";
 import LoadingOverlay from "react-loading-overlay";
 import Form from "./widgets/form";
+import { toast } from "react-toastify";
 
 class Login extends Form {
-  credentials = {
-    username: React.createRef(),
-    password: React.createRef()
-  };
   state = {
     data: {
       username: "",
@@ -19,6 +16,7 @@ class Login extends Form {
       username: "",
       password: ""
     },
+    failed: false,
     active: false
   };
 
@@ -42,47 +40,55 @@ class Login extends Form {
       const res = await login(this.state.data);
       if (res) {
         this.props.history.replace("/");
+        toast.success(
+          "Logged in successfully as " + this.state.data.username.toUpperCase()
+        );
       }
     } catch (ex) {
-      if (ex.response && ex.response.status === 404) console.log("Error");
-      this.setState({ active: false });
+      toast.error("Login failed");
+      this.setState({ failed: true, active: false });
     }
   };
 
-  hanndleChange = e => {};
-
   render() {
     return (
-      <LoadingOverlay
-        active={this.state.active}
-        spinner
-        styles={{
-          spinner: base => ({
-            ...base,
-            width: "100px",
-            height: "100px",
-            top: "-150px",
-            "& svg circle": {
-              stroke: "#0F6FA6"
-            }
-          })
-        }}
-      >
-        <div className="card top-block-raised">
-          <div className="card-body">
-            <h5 className="card-title">Login</h5>
-
-            <form>
-              {this.renderInput("Username", "username", "form-control")}
-              {this.renderInput("Password", "password", "password")}
-              {this.renderSubmitButton(
-                "Submit",
-                "btn btn-warning form-control"
+      <div>
+        <LoadingOverlay
+          active={this.state.active}
+          spinner
+          styles={{
+            spinner: base => ({
+              ...base,
+              width: "100px",
+              height: "100px",
+              top: "-150px",
+              "& svg circle": {
+                stroke: "#0F6FA6"
+              }
+            })
+          }}
+        >
+          <div className="card-login mt-20">
+            <div className="card-body">
+              <h5 className="card-title">Login</h5>
+              {this.state.failed && (
+                <div className="alert alert-danger">
+                  {" "}
+                  Username/Password do not match.
+                </div>
               )}
-            </form>
+              <form>
+                {this.renderInput("Username*", "username", "form-control")}
+                {this.renderInput("Password*", "password", "password")}
+                {this.renderSubmitButton(
+                  "Submit",
+                  "btn btn-warning form-control"
+                )}
+              </form>
+            </div>
           </div>
-        </div>
-      </LoadingOverlay>
+        </LoadingOverlay>
+      </div>
     );
   }
 }

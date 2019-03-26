@@ -1,5 +1,6 @@
 import React from "react";
 import { Doughnut } from "react-chartjs";
+import { getColor, generateColors } from "./util";
 
 class DoughnutChart extends React.Component {
   chartPieces = {};
@@ -24,14 +25,19 @@ class DoughnutChart extends React.Component {
       });
     }
     let arr = [];
+    let i = 0;
+    let colors = generateColors(Object.keys(this.chartPieces).length);
+    colors.splice(0, 1, "#fab917");
+
     for (let key in this.chartPieces) {
-      const color = "#" + ((Math.random() * 0xff0000) << 0).toString(16);
       const s = {
-        color,
-        highlight: color,
+        color: colors[i],
+        highlight: colors[i],
         value: this.chartPieces[key],
         label: key
       };
+      i++;
+
       arr.push(s);
     }
     if (arr.length > 0) {

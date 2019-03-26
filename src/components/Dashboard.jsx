@@ -6,7 +6,8 @@ import DoughnutChart from "./widgets/DoughnutChart";
 import { getAssets, recentTransactions } from "../services/data";
 import { Link } from "react-router-dom";
 import LoadingOverlay from "react-loading-overlay";
-import { dateCreator } from "./widgets/util";
+import { displayTransactions } from "./widgets/util";
+// REACT TOASTIFY
 
 class App extends Component {
   state = {
@@ -19,184 +20,36 @@ class App extends Component {
   };
 
   async componentWillMount() {
-    const assets = await getAssets();
-    const recents = await recentTransactions();
-    let batches = [];
-    let singles = [];
-    assets.filter(a => {
-      a.assetType === "Batch" ? batches.push(a) : singles.push(a);
-    });
-    this.setState({
-      assets,
-      recents,
-      singleAssets: singles,
-      batchAssets: batches,
-      active: false
-    });
-    this.checkLowInvenntory();
-  }
-
-  displayTransactions(asset, i) {
-    const date = dateCreator(asset.timestamp);
-
-    if (asset["transactionClass"] === "AssetEditLabelsTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue">Labels were updated</span> on
-            {" " + date}
-          </p>
-          <p>
-            {asset.oldLabels.length > 0 && "Old Labels:"}
-            {asset.oldLabels.length > 0 &&
-              asset.oldLabels.map((label, index) => (
-                <span key={index}>{" " + label + ", "}</span>
-              ))}
-          </p>
-          <p>
-            {asset.newLabels.length > 0 && "New Labels:"}
-            {asset.newLabels.length > 0 &&
-              asset.newLabels.map((label, index) => (
-                <span key={index}>{" " + label + " "}</span>
-              ))}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetAdditionTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-green">{asset.transactionType}</span>
-            {" " + date}
-          </p>
-          <p>
-            Old Amount:
-            {asset.oldAmount}
-          </p>
-          <p>
-            New Amount:
-            {asset.amount}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetSubtractionTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-warning">{asset.transactionType}</span>
-            {" " + date}
-          </p>
-          <p>
-            Old Amount:
-            {asset.oldAmount}
-          </p>
-          <p>
-            New Amount:
-            {asset.amount}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetCreateTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-green">A new Asset was created</span> on{" "}
-            {" " + date}
-          </p>
-          <p>
-            Asset Type:
-            {asset.assetType}
-          </p>
-          <p>
-            Asset Description:
-            {asset.description}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetEditThresholdTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue">{asset.transactionType}</span>
-            {" " + date}
-          </p>
-          <p>
-            Threshold:
-            {asset.newThreshold}
-          </p>
-          <p>
-            Actual Amount:
-            {asset.oldThreshold}
-          </p>
-        </React.Fragment>
-      );
-    } else if (
-      asset["transactionClass"] === "AssetEditDescriptionTransaction"
-    ) {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-warning">
-              Asset's Description was updated
-            </span>{" "}
-            on {" " + date} by {" " + asset.user}
-          </p>
-          <p>
-            Old Description:
-            {asset.oldDescription}
-          </p>
-          <p>
-            New Description:
-            {asset.newDescription}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetMoveTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue">Asset's Location was updated</span> on{" "}
-            {" " + date} by {" " + asset.user}
-          </p>
-          <p>
-            Old Location:
-            {asset.oldLocation}
-          </p>
-          <p>
-            New Location:
-            {asset.newLocation}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetUndoRemoveTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-blue"> Updated on asset</span> on{" "}
-            {" " + date} by {" " + asset.user}
-          </p>
-          <p>
-            Old Location:
-            {asset.oldLocation}
-          </p>
-          <p>
-            New Location:
-            {asset.newLocation}
-          </p>
-        </React.Fragment>
-      );
-    } else if (asset["transactionClass"] === "AssetAssignTransaction") {
-      return (
-        <React.Fragment key={i}>
-          <p>
-            <span className="field-green"> Asset was assigned</span> to{" "}
-            {" " + asset.assignee} on
-            {" " + date}
-          </p>
-        </React.Fragment>
-      );
+    try {
+      const assets = await getAssets();
+      const recents = await recentTransactions();
+      let batches = [];
+      let singles = [];
+      assets.filter(a => {
+        a.assetType === "Batch" ? batches.push(a) : singles.push(a);
+      });
+      if (recents && assets) {
+        recents.map(recent => {
+          assets.forEach(a => {
+            if (a.assetId === recent.assetId) {
+              recent["assetType"] = a.assetType;
+            }
+          });
+        });
+      }
+      this.setState({
+        assets,
+        recents,
+        singleAssets: singles,
+        batchAssets: batches,
+        active: false
+      });
+      this.checkLowInvenntory();
+    } catch (ex) {
+      this.setState({
+        active: false
+      });
     }
-    // return <p>{JSON.stringify(asset)}</p>;
   }
 
   checkLowInvenntory() {
@@ -229,7 +82,7 @@ class App extends Component {
             })
           }}
         >
-          <div className="row top-block-raised">
+          <div className="row b-raised sec-batch-scroll">
             <div className="col-9 my-card">
               <div className="row">
                 <div className="col-6 data-block my-card">
@@ -247,10 +100,6 @@ class App extends Component {
                   {this.state.batchAssets && (
                     <h3>{this.state.batchAssets.length}</h3>
                   )}
-                  {/* 
-                  {this.state.batchAssets && (
-                    <DoughnutChart assets={this.state.batchAssets} />
-                  )} */}
                   <DoughnutChart assets={this.state.batchAssets} batch={true} />
                 </div>
 
@@ -269,13 +118,12 @@ class App extends Component {
                   </h4>
                   <Assets
                     tableClasses="table-scroll"
-                    onMouse={this.onMouseEvent}
                     assets={this.state.assets}
                   />
                 </div>
               </div>
             </div>
-            <div className="col-3 row-itmes-flex my-card no-left-border">
+            <div className="col-3 row-itmes-flex my-card no-left-border scroll-card">
               <div className="inventory-update">
                 <h6
                   style={{ textAlign: "left" }}
@@ -296,7 +144,7 @@ class App extends Component {
                   ))}
                 </ul>
               </div>
-              <div className="inventory-transactions">
+              <div className="inventory-transactions ">
                 <br />
                 <h6 style={{ textAlign: "left" }} className="card-filled">
                   Latest Transactions:{" "}
@@ -307,7 +155,7 @@ class App extends Component {
                 {this.state.recents.map((a, i) => (
                   <ul className="list-group" key={i}>
                     <li className="list-group-item">
-                      {this.displayTransactions(a, i)}
+                      {displayTransactions(a, i)}
                     </li>
                     <br />
                   </ul>
