@@ -108,9 +108,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-blue">Labels were updated</span> on
-          {" " + date} by{" "}
+        <span className="mb-10 ">
+          <span className="field-blue">Labels were updated</span>
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -158,9 +158,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-green">{asset.transactionType} on</span>
-          {" " + date} by{" "}
+        <span className="mb-10 ">
+          <span className="field-green">{asset.transactionType}</span>
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -198,9 +198,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-warning">{asset.transactionType} on</span>
-          {" " + date} by{" "}
+        <span className="mb-10 ">
+          <span className="field-warning">{asset.transactionType + " "}</span>
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -238,9 +238,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-green">A new Asset was created</span> on{" "}
-          {" " + date} by{" "}
+        <span className="mb-10 ">
+          <span className="field-green">A new Asset created</span>
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -278,9 +278,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
+        <span className="mb-10 ">
           <span className="field-red">Low inventory update</span>
-          {" " + date} by{" "}
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -318,8 +318,8 @@ export function displayTransactions(asset, i, assetId = "null") {
             </Link>
             <hr />
           </div>
-          <span className="field-warning">Asset's Description was updated</span>{" "}
-          on {" " + date} by{" "}
+          <span className="field-warning">Description updated</span>
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -358,10 +358,10 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-blue">Asset's Location was updated</span> on{" "}
-          {" " + date} by{" "}
-          <span className="field-blue mb-10">{" " + asset.user}</span>
+        <span className="mb-10 ">
+          <span className="field-blue">Location updated</span>
+          {" on " + date + " "}
+          by <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
         <span className="d-block">
@@ -398,8 +398,9 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-blue"> Updated on asset</span> on {" " + date}{" "}
+        <span className="mb-10 ">
+          <span className="field-blue"> Updated on asset</span> on{" "}
+          {" on " + date}
           by <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span />
@@ -438,10 +439,10 @@ export function displayTransactions(asset, i, assetId = "null") {
           </div>
           <hr />
         </span>
-        <span className="m-5 ">
-          <span className="field-green"> Asset was assigned</span> to{" "}
-          {" " + asset.assignee} on
-          {" " + date} by{" "}
+        <span className="mb-10 ">
+          <span className="field-green"> Asset assigned</span> to{" "}
+          {" " + asset.assignee}
+          {" on " + date} by{" "}
           <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
       </React.Fragment>
@@ -470,15 +471,76 @@ export function displayTransactions(asset, i, assetId = "null") {
           <hr />
         </div>
 
-        <span className="m-5 ">
-          <span className="field-warning">
-            {" "}
-            Comments were updated on {" " + date} by{" "}
-            <span className="field-blue mb-10">{" " + asset.user}</span>
-          </span>
+        <span className="mb-10 ">
+          <span className="field-warning">Comments updated</span>
+          {" on " + date} by{" "}
+          <span className="field-blue mb-10">{" " + asset.user}</span>
         </span>
         <span className="d-block">Old Comment: {" " + asset.oldComment}</span>
         <span className="d-block">New Comment: {" " + asset.newComment}</span>
+      </React.Fragment>
+    );
+  } else if (asset["transactionClass"] === "AssetScanTransaction") {
+    return (
+      <React.Fragment key={i}>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "10px",
+            background: "linearGradient(to right, red, yellow)"
+          }}
+        >
+          Asset {" -  "}
+          <Link
+            to={{
+              pathname: `/asset/${asset.assetId ? asset.assetId : assetId}`,
+              search: `?type=${asset.assetType}`,
+              state: asset
+            }}
+            className="field-purple"
+          >
+            {asset.assetId ? asset.assetId : assetId}
+          </Link>
+          <hr />
+        </div>
+
+        <span className="mb-10 ">
+          <span className="field-blue">{asset.transactionType}</span>
+          {" on " + date} by{" "}
+          <span className="field-blue mb-10">{" " + asset.user}</span>
+        </span>
+      </React.Fragment>
+    );
+  } else if (asset["transactionClass"] === "AssetReturnTransaction") {
+    return (
+      <React.Fragment key={i}>
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "10px",
+            background: "linearGradient(to right, red, yellow)"
+          }}
+        >
+          Asset {" -  "}
+          <Link
+            to={{
+              pathname: `/asset/${asset.assetId ? asset.assetId : assetId}`,
+              search: `?type=${asset.assetType}`,
+              state: asset
+            }}
+            className="field-purple"
+          >
+            {asset.assetId ? asset.assetId : assetId}
+          </Link>
+          <hr />
+        </div>
+
+        <span className="mb-10 ">
+          <span className="field-red">Asset returned</span>
+          {" on " + date} by{" "}
+          <span className="field-blue mb-10">{" " + asset.returnedBy}</span>
+          {" to " + asset.user}
+        </span>
       </React.Fragment>
     );
   }

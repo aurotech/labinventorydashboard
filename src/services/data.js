@@ -37,7 +37,7 @@ export async function login(credentials) {
   const result = await http.post(apiEndPoint + "8080/login/", credentials);
 
   if (result.data) {
-    localStorage.setItem("useranme", credentials.username);
+    localStorage.setItem("username", credentials.username);
     localStorage.setItem("labId", result.data.token.toString());
     return true;
   }

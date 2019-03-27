@@ -95,7 +95,7 @@ class Assets extends Component {
           <table
             className={
               "rounded table tableFixHead table-striped" +
-              (!this.props.tableClasses ? " top-block-raised" : "")
+              (!this.props.tableClasses ? " b-raised" : "")
             }
           >
             <thead>

@@ -15,7 +15,7 @@ export const Transactions = props => {
       <div
         style={{
           position: "fixed",
-          top: "157px",
+          top: "180px",
           width: "27%",
           zIndex: "2000"
         }}

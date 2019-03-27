@@ -51,7 +51,10 @@ class Navbar extends Component {
             /> */}
 
               <div className="p-3 mt-5 ml-5">
-                {pathname === "/" && (
+                <h3 className="page-title">
+                  Innovation Lab Inventory Dashboard
+                </h3>
+                {/* {pathname === "/" && (
                   <React.Fragment>
                     <h3 className="page-title">
                       Innovation Lab Inventory Dashboard
@@ -75,7 +78,7 @@ class Navbar extends Component {
                       ASSETS
                     </h3>
                   </div>
-                )}
+                )} */}
               </div>
             </Link>
           </div>
@@ -108,27 +111,12 @@ class Navbar extends Component {
               </div>
             )}
           </div>
-
-          {/* <div className="container p-0">
-          {pathname === "/" && <h3 className="page-title">DASHBOARD</h3>}
-          {pathname.includes("asset") && <h3 className="page-title">ASSET</h3>}
-          {pathname === "/assets" && (
-            <div>
-              <h3 className="page-title">
-                <Button
-                  color="default"
-                  variant="contained"
-                  className="mr-15"
-                  onClick={() => this.props.history.goBack()}
-                >
-                  {<Icon>keyboard_backspace</Icon>}
-                </Button>
-                ASSETS
-              </h3>
-            </div>
-          )}
-        </div> */}
         </div>
+        {pathname === "/assets" && (
+          <React.Fragment>
+            <h3 className="page-title container ml-20">ASSETS</h3>
+          </React.Fragment>
+        )}
       </div>
     );
   }

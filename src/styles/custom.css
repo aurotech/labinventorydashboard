@@ -20,7 +20,7 @@ body {
 }
 
 .b-raised {
-  margin-top: -90px;
+  margin-top: -105px;
 }
 
 .field-red {
@@ -196,10 +196,15 @@ th {
 }
 
 @media (min-width: 1920px) {
-  .data-block {
-    padding: 42px !important;
-    text-transform: uppercase;
-    text-align: center;
+  .backgroung-img {
+    background-image: url("../assets/banner.jpg");
+    background-repeat: no-repeat;
+    height: 260px;
+    background-size: cover !important;
+  }
+
+  .b-raised {
+    margin-top: -50px !important;
   }
 }
 
@@ -252,7 +257,7 @@ th {
 
 .inventory-transactions {
   overflow-y: scroll;
-  max-height: 100vh;
+  min-height: 82vh;
 }
 
 .scroll-card {

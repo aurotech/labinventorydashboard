@@ -103,7 +103,7 @@ class App extends Component {
                   <DoughnutChart assets={this.state.batchAssets} batch={true} />
                 </div>
 
-                <div className="data-block">
+                <div className="data-block col-12">
                   <div className="pull-right">
                     <Link
                       className="btn btn-warning btn-sm"
